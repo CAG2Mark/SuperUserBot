@@ -1,0 +1,6 @@
+/target
+.env
+__pycache__
+botenv
+guilddata.json
+removequeue.json
