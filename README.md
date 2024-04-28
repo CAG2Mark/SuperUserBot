@@ -13,7 +13,7 @@ pip install -r requirements.txt
 ```
 Put your token into a .env file:
 ```
-echo "YOUR TOKEN" > .env
+echo "TOKEN=<your token>" > .env
 ```
 Run the bot:
 ```
