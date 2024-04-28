@@ -79,7 +79,7 @@ class Bot:
                 
                 await inter.user.add_roles(sudo_role)
                 
-                del_time = int(datetime.utcnow().timestamp()) + duration
+                del_time = int(datetime.utcnow().timestamp()) + duration * 60
                 self.rq.add(del_time, inter.user.id, inter.guild_id, sudo_role_id)
 
                 await inter.response.send_message(embed=success_embed("You are now in sudo mode."), ephemeral=True)
