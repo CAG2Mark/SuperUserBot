@@ -76,7 +76,7 @@ class Bot:
                 sudo_role = inter.guild.get_role(sudo_role_id)
 
                 if not sudo_role:
-                    inter.response.send_message(embed=error_embed("Misconfigured sudo role. Please contact an administrator."), ephemeral=True)
+                    await inter.response.send_message(embed=error_embed("Misconfigured sudo role. Please contact an administrator."), ephemeral=True)
                     return
                 
                 await inter.user.add_roles(sudo_role)
