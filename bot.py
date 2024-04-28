@@ -92,7 +92,7 @@ class Bot:
                               description='Set your password on this guild. DO NOT use the same password elsewhere.', 
                               dm_permission=False)
         async def set_password_command(inter: disnake.ApplicationCommandInteraction,
-                               password: str = commands.Param(default="", name="password", description="The password to set.")):
+                               password: str = commands.Param(default="", name="password", description="The password to set.", min_length=6, max_length=51)):
             pw = self.data.get_user_password_hashsalt(inter.guild_id, inter.user.id)
             sudo_role = self.data.get_guild_role(inter.guild_id)
             has_sudo_role = any([r.id == sudo_role for r in inter.user.roles])
