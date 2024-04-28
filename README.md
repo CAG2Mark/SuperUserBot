@@ -11,6 +11,10 @@ Install the dependencies:
 ```
 pip install -r requirements.txt
 ```
+Put your token into a .env file:
+```
+echo "YOUR TOKEN" > .env
+```
 Run the bot:
 ```
 python3 main.py
