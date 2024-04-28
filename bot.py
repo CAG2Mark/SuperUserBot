@@ -60,7 +60,9 @@ class Bot:
             pw_bytes = password.encode('utf-8')
             del password
             pw_hash = self.data.get_user_password_hashsalt(inter.guild_id, inter.user.id)
-            pw_hash_bytes = bytes.fromhex(self.data.get_user_password_hashsalt(inter.guild_id, inter.user.id))
+
+            if pw_hash:
+                pw_hash_bytes = bytes.fromhex(self.data.get_user_password_hashsalt(inter.guild_id, inter.user.id))
             
             if not pw_hash or bcrypt.checkpw(pw_bytes, pw_hash_bytes):
                 sudoer_role = self.data.get_guild_sudoer_role(inter.guild_id)
