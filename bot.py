@@ -56,7 +56,7 @@ class Bot:
                               dm_permission=False)
         async def sudo_command(inter: disnake.ApplicationCommandInteraction,
                                password: str = commands.Param(default="", name="password", description="Your password. Leave empty if you do not have a password on this guild yet."),
-                               duration: int = commands.Param(default=5, name="duration", description="The time you receive the administrator role for in minutes.", gt=1)):
+                               duration: int = commands.Param(default=5, name="duration", description="The time you receive the administrator role for in minutes.", gt=1, lt=20)):
             pw_bytes = password.encode('utf-8')
             del password
             pw_hash = self.data.get_user_password_hashsalt(inter.guild_id, inter.user.id)
@@ -139,7 +139,7 @@ class Bot:
 
                     user = guild.get_member(user)
                     if not user: continue
-                    
+
                     role = user.get_role(role)
                     if not role: continue
                 
