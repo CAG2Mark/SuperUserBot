@@ -88,7 +88,7 @@ class Bot:
                     await inter.response.send_message(embed=error_embed("Unkown error when giving you the sudo role. Please contact an administrator."), ephemeral=True)
                     return;
 
-                del_time = int(datetime.utcnow().timestamp()) + duration
+                del_time = int(datetime.utcnow().timestamp()) + duration * 60
                 self.rq.add(del_time, inter.user.id, inter.guild_id, sudo_role_id)
 
                 await inter.response.send_message(embed=success_embed("You are now in sudo mode."), ephemeral=True)
