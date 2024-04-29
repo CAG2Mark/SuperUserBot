@@ -36,10 +36,7 @@ class Bot:
     logger = logging.getLogger("superuserbot")
 
     def __init__(self, token, guild_data: GuildData, remove_queue: RemoveQueue) -> None:
-        intents = disnake.Intents.default()
-        intents.members = True
-
-        client = commands.InteractionBot(intents=intents)
+        client = commands.InteractionBot()
         self.client = client
         self.data: GuildData = guild_data
         self.rq = remove_queue
@@ -79,9 +76,19 @@ class Bot:
                     await inter.response.send_message(embed=error_embed("Misconfigured sudo role. Please contact an administrator."), ephemeral=True)
                     return
                 
-                await inter.user.add_roles(sudo_role)
-                
-                del_time = int(datetime.utcnow().timestamp()) + duration * 60
+                try:
+                    await inter.user.add_roles(sudo_role)
+                except disnake.errors.Forbidden:
+                    await inter.response.send_message(embed=error_embed("I do not have permission to grant you the sudo role. Please contact an administrator."), ephemeral=True)
+                    return;
+                except disnake.errors.NotFound:
+                    await inter.response.send_message(embed=error_embed("Could not find the sudo role. Please contact an administrator."), ephemeral=True)
+                    return;
+                except:
+                    await inter.response.send_message(embed=error_embed("Unkown error when giving you the sudo role. Please contact an administrator."), ephemeral=True)
+                    return;
+
+                del_time = int(datetime.utcnow().timestamp()) + duration
                 self.rq.add(del_time, inter.user.id, inter.guild_id, sudo_role_id)
 
                 await inter.response.send_message(embed=success_embed("You are now in sudo mode."), ephemeral=True)
@@ -139,7 +146,7 @@ class Bot:
                     guild = client.get_guild(guild)
                     if not guild: continue
 
-                    user = guild.get_member(user)
+                    user = await guild.get_or_fetch_member(user)
                     if not user: continue
 
                     role = user.get_role(role)
