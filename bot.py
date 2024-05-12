@@ -42,11 +42,21 @@ class Bot:
         self.rq = remove_queue
 
         self.initialized = False
-        
+        self.connected = False
+
         @client.event
         async def on_ready():
             self.logger.info(f"Successfully logged in to Discord with username {client.user}")
             self.initialized = True 
+
+        @client.event
+        async def on_connect():
+            self.logger.info(f"Succesfully reconnected")
+            self.connected = True
+
+        @client.event
+        async def on_disconnect():
+            self.connected = False
 
         @client.slash_command(name='sudo', 
                               description='Gives you the sudo role for a certain period of time.', 
@@ -139,20 +149,26 @@ class Bot:
         async def wrap():
             while True:
                 await asyncio.sleep(1)
+                
                 cur_time = int(datetime.utcnow().timestamp())
                 while self.rq.get_min_time() <= cur_time and self.rq.queue:
                     (_, user, guild, role) = self.rq.pop()
                     
-                    guild = client.get_guild(guild)
-                    if not guild: continue
+                    try:
+                        guild = client.get_guild(guild)
+                        if not guild: continue
 
-                    user = await guild.get_or_fetch_member(user)
-                    if not user: continue
+                        user = await guild.get_or_fetch_member(user)
+                        if not user: continue
 
-                    role = user.get_role(role)
-                    if not role: continue
-                
-                    await user.remove_roles(role)
+                        role = user.get_role(role)
+                        if not role: continue
+                    
+                        await user.remove_roles(role)
+                    except Exception as e:
+                        self.logger.error("Could not remove role from user. Trying again in 10 seconds. The error is as follows:")
+                        self.logger.exception(e)
+                        self.rq.add((cur_time + 10, user, guild, role))
                     
 
         client.loop.create_task(wrap())

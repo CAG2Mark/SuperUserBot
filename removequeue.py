@@ -20,7 +20,7 @@ class RemoveQueue:
     @mutex(lock=lock)
     @datawrite
     def add(self, del_time: int, user: int, guild: int, role: int):
-        heapq.heappush(self.queue, (del_time, user, guild, role))
+        heapq.heappush(self.queue, [del_time, user, guild, role]) # need to use list instead of tuple because json parses to list
 
     @mutex(lock=lock)
     def get_min_time(self):
